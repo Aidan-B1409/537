@@ -1,27 +1,29 @@
 from __future__ import division, print_function
+
 import glob
 import os
-import cv2
-import PIL
 import random
+from copy import copy, deepcopy
+
+import cv2
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+import PIL
 import torch
-import torch.nn.init
-import torch.nn as nn
-import torch.optim as optim
 import torch.backends.cudnn as cudnn
+import torch.nn as nn
 import torch.nn.functional as F
+import torch.nn.init
+import torch.optim as optim
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
-from tqdm import tqdm
 from torch.autograd import Variable
-from copy import deepcopy, copy
+from tqdm import tqdm
+
 from config_profile import args
-from Utils import cv2_scale36, cv2_scale, np_reshape, np_reshape64
-from Utils import L2Norm, cv2_scale, np_reshape
+from Utils import L2Norm, cv2_scale, cv2_scale36, np_reshape, np_reshape64
 
 # import torchvision
 
@@ -218,7 +220,7 @@ dataset_names = ["liberty", "notredame"]
 args.n_triplets = 100000  # for illustration, here we only use 5000 triples; in your experiment, set it as 100000
 args.epochs = 80  # in your experiment, set it as 60; For CNN1, it will take ~ 1hr20mins if n_triplets = 100000
 args.optimizer = "adam"
-args.lr = 0.004
+args.lr = 0.001
 args.wd = 0.01
 
 train_loader, validation_loader = create_loaders(
@@ -266,9 +268,9 @@ for i_batch, sample_batched in enumerate(train_loader):
 
 
 # load network from the python file. You need to submit these .py files to TA
-from CNN1 import DesNet  # uncomment this line if you are using DesNet from CNN1.py
+# from CNN1 import DesNet  # uncomment this line if you are using DesNet from CNN1.py
+from CNN2 import DesNet  # uncomment this line if you are using DesNet from CNN2.py
 
-# from CNN2 import DesNet      # uncomment this line if you are using DesNet from CNN2.py
 # from CNN3 import DesNet      # uncomment this line if you are using DesNet from CNN3.py
 
 model = DesNet()
@@ -442,7 +444,7 @@ from Losses import loss_DesNet
 TEST_ON_W1BS = True
 LOG_DIR = args.log_dir
 if args.enable_logging:
-    from Loggers import Logger, FileLogger
+    from Loggers import FileLogger, Logger
 
     logger = Logger(LOG_DIR)
 
@@ -494,5 +496,5 @@ print(features.shape)  # in your case, the shape should be [10, 200, 128]
 
 
 # save to file, with the name of *_features_CNN*.pth
-features_dir = "features_CNN1.pth"
+features_dir = "features_CNN2.pth"
 torch.save(features, features_dir)
